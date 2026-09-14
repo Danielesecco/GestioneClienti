@@ -1,79 +1,131 @@
-const PUNTI_SINISTRA = [
-  { lettera: "A", cx: 130, cy: 118 },
-  { lettera: "B", cx: 118, cy: 150 },
-  { lettera: "C", cx: 118, cy: 182 },
-  { lettera: "D", cx: 130, cy: 212 },
+"use client";
+
+type Punto = { colore?: string; codice?: string };
+
+const CX = 500;
+const CY = 210;
+const R_LIMBALE = 108;
+const R_MEDIANA = 78;
+const R_INTERNA = 48;
+const R_PUPILLA = 20;
+
+const BADGE_SINISTRA = [
+  { lettera: "A", y: 95, atterraggio: { x: 428, y: 138 } },
+  { lettera: "B", y: 165, atterraggio: { x: 438, y: 172 } },
+  { lettera: "C", y: 235, atterraggio: { x: 448, y: 205 } },
+  { lettera: "D", y: 305, atterraggio: { x: 462, y: 222 } },
 ];
 
-const PUNTI_DESTRA = [
-  { lettera: "E", cx: 270, cy: 118 },
-  { lettera: "F", cx: 282, cy: 150 },
-  { lettera: "G", cx: 282, cy: 182 },
-  { lettera: "H", cx: 270, cy: 212 },
+const BADGE_DESTRA = [
+  { lettera: "E", y: 95, atterraggio: { x: 572, y: 138 } },
+  { lettera: "F", y: 165, atterraggio: { x: 562, y: 172 } },
+  { lettera: "G", y: 235, atterraggio: { x: 552, y: 205 } },
+  { lettera: "H", y: 305, atterraggio: { x: 538, y: 222 } },
 ];
 
-export default function DiagrammaOcchio() {
+export default function DiagrammaOcchio({
+  punti,
+  onChange,
+}: {
+  punti: Record<string, Punto>;
+  onChange: (lettera: string, campo: "colore" | "codice", valore: string) => void;
+}) {
+  function inputStyle(): React.CSSProperties {
+    return {
+      width: "100%",
+      background: "transparent",
+      border: "none",
+      borderBottom: "1px solid #E4E4E4",
+      fontSize: "11px",
+      fontFamily: "Manrope, sans-serif",
+      color: "#1A1A1A",
+      padding: "2px 2px",
+      outline: "none",
+    };
+  }
+
   return (
-    <svg width="100%" viewBox="0 0 400 330" className="max-w-[420px] mx-auto">
+    <svg width="100%" viewBox="0 0 1000 420" className="mx-auto">
       {/* Forma a mandorla dell'occhio */}
       <path
-        d="M 40 165 C 120 90 280 90 360 165 C 280 240 120 240 40 165 Z"
+        d={`M 150 ${CY} C 290 ${CY - 120} 710 ${CY - 120} 850 ${CY} C 710 ${CY + 120} 290 ${CY + 120} 150 ${CY} Z`}
         fill="none"
         stroke="#1A1A1A"
-        strokeWidth="1.5"
+        strokeWidth="1.6"
       />
 
-      {/* Iride */}
-      <circle cx="200" cy="165" r="70" fill="#F4EFE9" stroke="#1A1A1A" strokeWidth="1.3" />
-      <circle cx="200" cy="165" r="46" fill="none" stroke="#CFC7BC" strokeWidth="1" />
-      <circle cx="200" cy="165" r="24" fill="none" stroke="#CFC7BC" strokeWidth="1" />
-      {/* Pupilla */}
-      <circle cx="200" cy="165" r="15" fill="#1A1A1A" />
-      <circle cx="195" cy="159" r="3.5" fill="#FFFFFF" opacity="0.8" />
+      {/* Iride: 4 zone concentriche */}
+      <circle cx={CX} cy={CY} r={R_LIMBALE} fill="#F7F4EF" stroke="#1A1A1A" strokeWidth="1.4" />
+      <circle cx={CX} cy={CY} r={R_MEDIANA} fill="none" stroke="#D8D2C6" strokeWidth="1" strokeDasharray="2 3" />
+      <circle cx={CX} cy={CY} r={R_INTERNA} fill="none" stroke="#D8D2C6" strokeWidth="1" strokeDasharray="2 3" />
+      <circle cx={CX} cy={CY} r={R_PUPILLA} fill="#1A1A1A" />
+      <circle cx={CX - 6} cy={CY - 6} r="3.5" fill="#FFFFFF" opacity="0.85" />
 
-      {/* Punti a sinistra, con linee guida verso l'iride */}
-      {PUNTI_SINISTRA.map((p) => (
-        <g key={p.lettera}>
-          <line x1={p.cx + 8} y1={p.cy} x2={200 - 40} y2={165} stroke="#E4E4E4" />
-          <circle cx={p.cx} cy={p.cy} r="9" fill="#0E93A3" />
-          <text
-            x={p.cx}
-            y={p.cy}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize="9"
-            fontWeight={700}
-            fill="#FFFFFF"
-            fontFamily="Poppins, sans-serif"
-          >
-            {p.lettera}
+      {/* Badge sinistri + linee guida verso l'iride + campi */}
+      {BADGE_SINISTRA.map((b) => (
+        <g key={b.lettera}>
+          <line x1={40} y1={b.y} x2={b.atterraggio.x} y2={b.atterraggio.y} stroke="#CFCFCF" strokeWidth="1" />
+          <circle cx="26" cy={b.y} r="13" fill="#0E93A3" />
+          <text x="26" y={b.y} textAnchor="middle" dominantBaseline="middle" fontSize="11" fontWeight={700} fill="#FFFFFF" fontFamily="Poppins, sans-serif">
+            {b.lettera}
           </text>
+
+          <text x="54" y={b.y - 10} fontSize="9" fill="#8A8A8A" letterSpacing="0.5" fontFamily="Manrope, sans-serif">COLORE</text>
+          <foreignObject x="54" y={b.y - 6} width="110" height="20">
+            <input
+              style={inputStyle()}
+              value={punti?.[b.lettera]?.colore ?? ""}
+              onChange={(e) => onChange(b.lettera, "colore", e.target.value)}
+            />
+          </foreignObject>
+
+          <text x="178" y={b.y - 10} fontSize="9" fill="#8A8A8A" letterSpacing="0.5" fontFamily="Manrope, sans-serif">CODICE</text>
+          <foreignObject x="178" y={b.y - 6} width="110" height="20">
+            <input
+              style={inputStyle()}
+              value={punti?.[b.lettera]?.codice ?? ""}
+              onChange={(e) => onChange(b.lettera, "codice", e.target.value)}
+            />
+          </foreignObject>
         </g>
       ))}
 
-      {/* Punti a destra */}
-      {PUNTI_DESTRA.map((p) => (
-        <g key={p.lettera}>
-          <line x1={p.cx - 8} y1={p.cy} x2={200 + 40} y2={165} stroke="#E4E4E4" />
-          <circle cx={p.cx} cy={p.cy} r="9" fill="#0E93A3" />
-          <text
-            x={p.cx}
-            y={p.cy}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize="9"
-            fontWeight={700}
-            fill="#FFFFFF"
-            fontFamily="Poppins, sans-serif"
-          >
-            {p.lettera}
+      {/* Badge destri + linee guida + campi */}
+      {BADGE_DESTRA.map((b) => (
+        <g key={b.lettera}>
+          <line x1={960} y1={b.y} x2={b.atterraggio.x} y2={b.atterraggio.y} stroke="#CFCFCF" strokeWidth="1" />
+          <circle cx="974" cy={b.y} r="13" fill="#0E93A3" />
+          <text x="974" y={b.y} textAnchor="middle" dominantBaseline="middle" fontSize="11" fontWeight={700} fill="#FFFFFF" fontFamily="Poppins, sans-serif">
+            {b.lettera}
           </text>
+
+          <text x="706" y={b.y - 10} fontSize="9" fill="#8A8A8A" letterSpacing="0.5" fontFamily="Manrope, sans-serif">COLORE</text>
+          <foreignObject x="706" y={b.y - 6} width="110" height="20">
+            <input
+              style={inputStyle()}
+              value={punti?.[b.lettera]?.colore ?? ""}
+              onChange={(e) => onChange(b.lettera, "colore", e.target.value)}
+            />
+          </foreignObject>
+
+          <text x="830" y={b.y - 10} fontSize="9" fill="#8A8A8A" letterSpacing="0.5" fontFamily="Manrope, sans-serif">CODICE</text>
+          <foreignObject x="830" y={b.y - 6} width="110" height="20">
+            <input
+              style={inputStyle()}
+              value={punti?.[b.lettera]?.codice ?? ""}
+              onChange={(e) => onChange(b.lettera, "codice", e.target.value)}
+            />
+          </foreignObject>
         </g>
       ))}
 
-      <text x="200" y="300" textAnchor="middle" fontSize="9" fill="#6B6B6B">
-        Pupilla · zona interna · zona mediana · bordo limbale
-      </text>
+      {/* Legenda zone */}
+      <g fontFamily="Manrope, sans-serif" fontSize="10" fill="#6B6B6B">
+        <text x="250" y="400">1 Pupilla / alone pupillare</text>
+        <text x="430" y="400">2 Zona interna</text>
+        <text x="590" y="400">3 Zona mediana</text>
+        <text x="740" y="400">4 Zona esterna / bordo limbale</text>
+      </g>
     </svg>
   );
 }

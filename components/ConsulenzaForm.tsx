@@ -48,7 +48,6 @@ const PALETTE_IRIDE = [
   { nome: "Bianco", colore: "#FFFFFF" },
 ];
 
-const PUNTI_IRIDE = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
 export default function ConsulenzaForm({
   clienteId,
@@ -470,28 +469,10 @@ export default function ConsulenzaForm({
       <Sezione titolo="Analisi cromatica dell'iride" sottotitolo="Mappatura colori e contrasti">
         <div>
           <EtichettaCampo testo="Mappa dell'iride" />
-          <DiagrammaOcchio />
-          <div className="grid grid-cols-2 gap-3 mt-4">
-            {PUNTI_IRIDE.map((punto) => (
-              <div key={punto} className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-paper border border-line flex items-center justify-center text-xs text-ink flex-shrink-0">
-                  {punto}
-                </span>
-                <input
-                  placeholder="Colore"
-                  value={dati.iride_punti?.[punto]?.colore ?? ""}
-                  onChange={(e) => setPuntoIride(punto, "colore", e.target.value)}
-                  className="flex-1 min-w-0 border border-line rounded px-2 py-1.5 bg-white text-ink text-sm"
-                />
-                <input
-                  placeholder="Codice"
-                  value={dati.iride_punti?.[punto]?.codice ?? ""}
-                  onChange={(e) => setPuntoIride(punto, "codice", e.target.value)}
-                  className="flex-1 min-w-0 border border-line rounded px-2 py-1.5 bg-white text-ink text-sm"
-                />
-              </div>
-            ))}
-          </div>
+          <DiagrammaOcchio
+            punti={dati.iride_punti ?? {}}
+            onChange={(lettera, campo, valore) => setPuntoIride(lettera, campo, valore)}
+          />
         </div>
 
         <div>
