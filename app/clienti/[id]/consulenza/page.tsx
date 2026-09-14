@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getUtenteCorrente } from "@/lib/auth";
 import ConsulenzaForm from "@/components/ConsulenzaForm";
 
 export const dynamic = "force-dynamic";
@@ -12,10 +13,11 @@ export default async function ConsulenzaPage({
   params: { id: string };
 }) {
   const supabase = createClient();
+  const { profilo } = await getUtenteCorrente();
 
   const { data: cliente } = await supabase
     .from("clienti")
-    .select("id, nome, cognome")
+    .select("id, nome, cognome, telefono, email")
     .eq("id", params.id)
     .single();
 
@@ -47,7 +49,12 @@ export default async function ConsulenzaPage({
         Ascolto, analisi e progettazione personalizzata dell&apos;immagine.
       </p>
 
-      <ConsulenzaForm clienteId={cliente.id} consulenzaIniziale={consulenza} />
+      <ConsulenzaForm
+        clienteId={cliente.id}
+        cliente={cliente}
+        hairCoachDefault={profilo?.nome ?? profilo?.email ?? ""}
+        consulenzaIniziale={consulenza}
+      />
     </div>
   );
 }

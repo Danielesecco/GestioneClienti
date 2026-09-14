@@ -52,9 +52,13 @@ const PUNTI_IRIDE = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
 export default function ConsulenzaForm({
   clienteId,
+  cliente,
+  hairCoachDefault,
   consulenzaIniziale,
 }: {
   clienteId: string;
+  cliente: { nome: string; cognome: string; telefono: string | null; email: string | null };
+  hairCoachDefault: string;
   consulenzaIniziale: Consulenza | null;
 }) {
   const router = useRouter();
@@ -65,6 +69,9 @@ export default function ConsulenzaForm({
       iride_punti: {},
       iride_palette: [],
       fs_occhio_cm: ["", "", "", "", ""],
+      data_consulenza: new Date().toISOString().slice(0, 10),
+      hair_coach: hairCoachDefault,
+      contatto: cliente.telefono || cliente.email || "",
     }
   );
   const [foto, setFoto] = useState<{
@@ -171,87 +178,150 @@ export default function ConsulenzaForm({
   return (
     <div className="space-y-10 pb-24">
       {/* LA TUA STORIA */}
-      <Sezione titolo="La tua storia" sottotitolo="Ascolto e desideri del cliente">
-        <CampoFoto
-          etichetta="Foto prima"
-          fileScelto={foto.prima}
-          urlEsistente={dati.foto_prima}
-          onChange={(f) => setFoto((s) => ({ ...s, prima: f }))}
-        />
-        <CampoFoto
-          etichetta="Foto dopo"
-          fileScelto={foto.dopo}
-          urlEsistente={dati.foto_dopo}
-          onChange={(f) => setFoto((s) => ({ ...s, dopo: f }))}
-        />
-        <CampoFoto
+      <section className="border border-line rounded-lg bg-white p-6 space-y-6">
+        <div>
+          <h2 className="font-heading font-extrabold text-2xl text-moss uppercase tracking-tight">
+            La tua storia
+          </h2>
+          <p className="text-sm text-slate mt-1">
+            Un dialogo per conoscere la persona prima ancora dei suoi capelli.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <CampoFotoGrande
+            etichetta="Prima"
+            fileScelto={foto.prima}
+            urlEsistente={dati.foto_prima}
+            onChange={(f) => setFoto((s) => ({ ...s, prima: f }))}
+          />
+          <CampoFotoGrande
+            etichetta="Dopo"
+            fileScelto={foto.dopo}
+            urlEsistente={dati.foto_dopo}
+            onChange={(f) => setFoto((s) => ({ ...s, dopo: f }))}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+          <CampoConLinea
+            etichetta="Nome e cognome"
+            valore={`${cliente.nome} ${cliente.cognome}`}
+            readOnly
+          />
+          <CampoConLinea
+            etichetta="Data"
+            tipo="date"
+            valore={dati.data_consulenza}
+            onChange={(v) => set("data_consulenza", v)}
+          />
+          <CampoConLinea
+            etichetta="Hair coach"
+            valore={dati.hair_coach}
+            onChange={(v) => set("hair_coach", v)}
+          />
+          <CampoConLinea
+            etichetta="Contatto"
+            valore={dati.contatto}
+            onChange={(v) => set("contatto", v)}
+          />
+        </div>
+
+        <div>
+          <h3 className="font-heading font-extrabold text-lg text-moss uppercase tracking-tight mb-4">
+            Partiamo da te
+          </h3>
+          <div className="space-y-5">
+            <DomandaNumerata
+              numero={1}
+              domanda="Mi racconti un po' delle tue giornate? Lavoro, tempo libero, sport…"
+              valore={dati.racconto_giornate}
+              onChange={(v) => set("racconto_giornate", v)}
+            />
+            <DomandaNumerata
+              numero={2}
+              domanda="Che rapporto hai con i tuoi capelli?"
+              valore={dati.rapporto_capelli}
+              onChange={(v) => set("rapporto_capelli", v)}
+            />
+            <DomandaNumerata
+              numero={3}
+              domanda="Quando ti prepari al mattino, quanto tempo vuoi dedicare ai tuoi capelli?"
+              valore={dati.tempo_mattino}
+              onChange={(v) => set("tempo_mattino", v)}
+            />
+            <DomandaNumerata
+              numero={4}
+              domanda="Raccontami come ti prendi cura normalmente dei tuoi capelli, da quando li lavi a quando esci di casa."
+              valore={dati.routine_cura}
+              onChange={(v) => set("routine_cura", v)}
+            />
+            <DomandaNumerata
+              numero={5}
+              domanda="Come vorresti che fossero i tuoi capelli?"
+              valore={dati.capelli_desiderati}
+              onChange={(v) => set("capelli_desiderati", v)}
+            />
+          </div>
+        </div>
+
+        <CampoFotoGrande
           etichetta="Immagine d'ispirazione"
           fileScelto={foto.ispirazione}
           urlEsistente={dati.foto_ispirazione}
           onChange={(f) => setFoto((s) => ({ ...s, ispirazione: f }))}
         />
 
-        <TestoArea
-          etichetta="Le sue giornate: lavoro, tempo libero, sport…"
-          valore={dati.racconto_giornate}
-          onChange={(v) => set("racconto_giornate", v)}
-        />
-        <TestoArea
-          etichetta="Che rapporto ha con i suoi capelli?"
-          valore={dati.rapporto_capelli}
-          onChange={(v) => set("rapporto_capelli", v)}
-        />
-        <TestoArea
-          etichetta="Quanto tempo vuole dedicare ai capelli al mattino?"
-          valore={dati.tempo_mattino}
-          onChange={(v) => set("tempo_mattino", v)}
-        />
-        <TestoArea
-          etichetta="Come si prende cura normalmente dei capelli, dal lavaggio all'uscita di casa"
-          valore={dati.routine_cura}
-          onChange={(v) => set("routine_cura", v)}
-        />
-        <TestoArea
-          etichetta="Come vorrebbe che fossero i suoi capelli?"
-          valore={dati.capelli_desiderati}
-          onChange={(v) => set("capelli_desiderati", v)}
-        />
-        <TestoArea
-          etichetta="Come sono i capelli oggi? Quando sente che non vanno bene?"
-          valore={dati.capelli_oggi}
-          onChange={(v) => set("capelli_oggi", v)}
-        />
-        <TestoArea
-          etichetta="Quanto valore dà ai capelli nel complesso della sua immagine?"
-          valore={dati.valore_capelli}
-          onChange={(v) => set("valore_capelli", v)}
-        />
-        <TestoArea
-          etichetta="Quanto è disposta a occuparsene tra un appuntamento e l'altro? Cosa non farebbe mai?"
-          valore={dati.disponibilita_cura}
-          onChange={(v) => set("disponibilita_cura", v)}
-        />
-        <TestoArea
-          etichetta="Preferisce risultati naturali o un look che si fa notare?"
-          valore={dati.preferenza_look}
-          onChange={(v) => set("preferenza_look", v)}
-        />
-        <TestoArea
-          etichetta="In passato, un look che l'ha fatta sentire bene? Cosa le piaceva?"
-          valore={dati.esperienza_positiva}
-          onChange={(v) => set("esperienza_positiva", v)}
-        />
-        <TestoArea
-          etichetta="Se dovessimo migliorare una sola cosa, quale sarebbe?"
-          valore={dati.miglioramento_prioritario}
-          onChange={(v) => set("miglioramento_prioritario", v)}
-        />
-        <TestoArea
-          etichetta="Uscendo dal salone, come vorrebbe sentirsi?"
-          valore={dati.sensazione_uscita}
-          onChange={(v) => set("sensazione_uscita", v)}
-        />
-      </Sezione>
+        <div>
+          <h3 className="font-heading font-extrabold text-lg text-moss uppercase tracking-tight mb-4">
+            Come ti vedi, come vuoi sentirti
+          </h3>
+          <div className="space-y-5">
+            <DomandaNumerata
+              numero={6}
+              domanda="I tuoi capelli come sono oggi? Quando senti che non vanno bene per te?"
+              valore={dati.capelli_oggi}
+              onChange={(v) => set("capelli_oggi", v)}
+            />
+            <DomandaNumerata
+              numero={7}
+              domanda="Quanto valore dai ai tuoi capelli nel complesso della tua immagine?"
+              valore={dati.valore_capelli}
+              onChange={(v) => set("valore_capelli", v)}
+            />
+            <DomandaNumerata
+              numero={8}
+              domanda="Quanto sei disposta a occuparti dei tuoi capelli tra un appuntamento e l'altro? Cosa non saresti assolutamente disposta a fare?"
+              valore={dati.disponibilita_cura}
+              onChange={(v) => set("disponibilita_cura", v)}
+            />
+            <DomandaNumerata
+              numero={9}
+              domanda="Preferisci risultati molto naturali o vuoi che il tuo look si faccia notare?"
+              valore={dati.preferenza_look}
+              onChange={(v) => set("preferenza_look", v)}
+            />
+            <DomandaNumerata
+              numero={10}
+              domanda="Nelle tue esperienze passate, hai mai avuto un look che ti faceva sentire particolarmente bene? Cosa ti piaceva?"
+              valore={dati.esperienza_positiva}
+              onChange={(v) => set("esperienza_positiva", v)}
+            />
+            <DomandaNumerata
+              numero={11}
+              domanda="Se dovessimo migliorare una sola cosa, quale sarebbe davvero importante per te?"
+              valore={dati.miglioramento_prioritario}
+              onChange={(v) => set("miglioramento_prioritario", v)}
+            />
+            <DomandaNumerata
+              numero={12}
+              domanda="Quando esci dal salone, come vorresti sentirti?"
+              valore={dati.sensazione_uscita}
+              onChange={(v) => set("sensazione_uscita", v)}
+            />
+          </div>
+        </div>
+      </section>
 
       {/* ARMOCROMIA */}
       <Sezione titolo="Armocromia" sottotitolo="Stagione colore di riferimento">
@@ -710,6 +780,102 @@ export default function ConsulenzaForm({
         </div>
       </div>
     </div>
+  );
+}
+
+function DomandaNumerata({
+  numero,
+  domanda,
+  valore,
+  onChange,
+}: {
+  numero: number;
+  domanda: string;
+  valore: string | undefined;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div>
+      <p className="text-sm text-ink mb-1.5">
+        <span className="font-heading font-bold text-moss mr-1.5">
+          {numero}.
+        </span>
+        {domanda}
+      </p>
+      <textarea
+        value={valore ?? ""}
+        onChange={(e) => onChange(e.target.value)}
+        rows={2}
+        className="w-full bg-transparent border-b border-dashed border-line text-sm text-ink px-0 py-1 focus:outline-none focus:border-moss resize-none"
+      />
+    </div>
+  );
+}
+
+function CampoConLinea({
+  etichetta,
+  valore,
+  onChange,
+  tipo = "text",
+  readOnly = false,
+}: {
+  etichetta: string;
+  valore: string | undefined;
+  onChange?: (v: string) => void;
+  tipo?: string;
+  readOnly?: boolean;
+}) {
+  return (
+    <div>
+      <span className="block text-xs font-heading font-bold text-moss uppercase tracking-wide mb-1">
+        {etichetta}
+      </span>
+      <input
+        type={tipo}
+        value={valore ?? ""}
+        readOnly={readOnly}
+        onChange={(e) => onChange && onChange(e.target.value)}
+        className={`w-full bg-transparent border-b border-line text-sm px-0 py-1 focus:outline-none focus:border-moss ${
+          readOnly ? "text-slate" : "text-ink"
+        }`}
+      />
+    </div>
+  );
+}
+
+function CampoFotoGrande({
+  etichetta,
+  fileScelto,
+  urlEsistente,
+  onChange,
+}: {
+  etichetta: string;
+  fileScelto: File | null;
+  urlEsistente: string | undefined;
+  onChange: (f: File | null) => void;
+}) {
+  const anteprima = fileScelto ? URL.createObjectURL(fileScelto) : urlEsistente;
+
+  return (
+    <label className="relative block aspect-[4/3] rounded-lg border border-line bg-paper cursor-pointer overflow-hidden group">
+      <span className="absolute top-3 left-3 font-heading font-bold text-xs text-moss uppercase tracking-wide z-10">
+        {etichetta}
+      </span>
+      {anteprima ? (
+        <Image src={anteprima} alt={etichetta} fill className="object-cover" />
+      ) : (
+        <span className="absolute inset-0 flex items-center justify-center text-xs text-slate uppercase tracking-wide">
+          Spazio foto
+        </span>
+      )}
+      <span className="absolute inset-0 bg-ink/0 group-hover:bg-ink/10 transition-colors" />
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => onChange(e.target.files?.[0] ?? null)}
+      />
+    </label>
   );
 }
 
