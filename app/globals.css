@@ -1,20 +1,20 @@
-@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400&family=Manrope:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  background-color: #f7f5f1;
-  color: #1c2321;
+  background-color: #faf4ee;
+  color: #2a1e1b;
 }
 
 ::selection {
-  background-color: #b5533c;
-  color: #f7f5f1;
+  background-color: #7a2e3a;
+  color: #faf4ee;
 }
 
 *:focus-visible {
-  outline: 2px solid #3f5b4f;
+  outline: 2px solid #7a2e3a;
   outline-offset: 2px;
 }

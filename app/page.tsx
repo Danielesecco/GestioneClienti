@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UserPlus, Users, ShieldCheck, ChevronRight } from "lucide-react";
 import { getUtenteCorrente } from "@/lib/auth";
 
 export default async function Home() {
@@ -6,51 +7,76 @@ export default async function Home() {
   const isAdmin = profilo?.ruolo === "admin";
 
   return (
-    <div className="max-w-md mx-auto pt-8">
-      <h1 className="font-display text-2xl text-ink mb-1">
-        Ciao{profilo?.nome ? `, ${profilo.nome}` : ""}
-      </h1>
-      <p className="text-sm text-slate mb-8">Cosa vuoi fare?</p>
+    <div className="relative max-w-md mx-auto pt-8">
+      <img
+        src="/motivo-decorativo.svg"
+        alt=""
+        className="pointer-events-none select-none absolute -top-6 -right-24 w-[420px] opacity-70 hidden md:block"
+      />
 
-      <nav className="space-y-3">
-        <VoceMenu
-          href="/nuovo"
-          titolo="Aggiungi cliente"
-          descrizione="Inserisci un nuovo cliente con dati e foto"
-        />
-        <VoceMenu
-          href="/clienti"
-          titolo="Lista clienti"
-          descrizione="Cerca, apri e gestisci i clienti esistenti"
-        />
-        {isAdmin && (
+      <div className="relative">
+        <p className="font-display italic text-moss/70 text-lg mb-1">
+          Bentornat{profilo?.nome ? "a" : "o"}
+        </p>
+        <h1 className="font-display text-3xl text-ink mb-8">
+          {profilo?.nome || "Ciao"}
+        </h1>
+
+        <nav className="space-y-3">
           <VoceMenu
-            href="/admin/operatori"
-            titolo="Gestisci operatori"
-            descrizione="Crea e visualizza gli account del team"
+            href="/nuovo"
+            icona={<UserPlus size={20} strokeWidth={1.6} />}
+            titolo="Aggiungi cliente"
+            descrizione="Inserisci un nuovo cliente con dati e foto"
           />
-        )}
-      </nav>
+          <VoceMenu
+            href="/clienti"
+            icona={<Users size={20} strokeWidth={1.6} />}
+            titolo="Lista clienti"
+            descrizione="Cerca, apri e gestisci i clienti esistenti"
+          />
+          {isAdmin && (
+            <VoceMenu
+              href="/admin/operatori"
+              icona={<ShieldCheck size={20} strokeWidth={1.6} />}
+              titolo="Gestisci operatori"
+              descrizione="Crea e visualizza gli account del team"
+            />
+          )}
+        </nav>
+      </div>
     </div>
   );
 }
 
 function VoceMenu({
   href,
+  icona,
   titolo,
   descrizione,
 }: {
   href: string;
+  icona: React.ReactNode;
   titolo: string;
   descrizione: string;
 }) {
   return (
     <Link
       href={href}
-      className="block border border-line rounded-lg px-5 py-4 bg-white hover:border-moss hover:bg-paper transition-colors"
+      className="group flex items-center gap-4 border-l-2 border-line pl-5 pr-4 py-4 bg-white hover:border-moss transition-colors"
     >
-      <p className="font-display text-lg text-ink">{titolo}</p>
-      <p className="text-sm text-slate">{descrizione}</p>
+      <span className="flex-shrink-0 w-10 h-10 rounded-full bg-paper flex items-center justify-center text-moss">
+        {icona}
+      </span>
+      <span className="flex-1 min-w-0">
+        <span className="block font-display text-lg text-ink">{titolo}</span>
+        <span className="block text-sm text-slate">{descrizione}</span>
+      </span>
+      <ChevronRight
+        size={18}
+        strokeWidth={1.75}
+        className="text-moss opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+      />
     </Link>
   );
 }

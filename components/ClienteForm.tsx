@@ -107,7 +107,7 @@ export default function ClienteForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="flex items-center gap-4">
-        <div className="w-20 h-20 rounded-full bg-line overflow-hidden flex-shrink-0 relative">
+        <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 relative bg-gradient-to-br from-moss to-ink">
           {anteprima ? (
             <Image
               src={anteprima}
@@ -117,7 +117,7 @@ export default function ClienteForm({
               className="object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-slate text-xs text-center px-1">
+            <div className="w-full h-full flex items-center justify-center text-paper text-xs text-center px-1 font-display">
               Nessuna foto
             </div>
           )}

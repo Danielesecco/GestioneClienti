@@ -71,7 +71,7 @@ export default async function ListaClientiPage({
               href={`/clienti/${cliente.id}`}
               className="flex items-center gap-4 px-4 py-3 bg-white hover:bg-paper transition-colors"
             >
-              <div className="w-12 h-12 rounded-full bg-line overflow-hidden flex-shrink-0 relative">
+              <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 relative bg-gradient-to-br from-moss to-ink">
                 {cliente.foto_url ? (
                   <Image
                     src={cliente.foto_url}
@@ -81,7 +81,7 @@ export default async function ListaClientiPage({
                     className="object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate text-sm">
+                  <div className="w-full h-full flex items-center justify-center text-paper text-sm font-display">
                     {cliente.nome?.[0]}
                     {cliente.cognome?.[0]}
                   </div>
