@@ -263,44 +263,48 @@ export default function ConsulenzaForm({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <Scelta
+        <div className="space-y-4">
+          <SceltaConNota
             etichetta="Sottotono"
             opzioni={["caldo", "freddo"]}
             valore={dati.arm_sottotono}
             onChange={(v) => set("arm_sottotono", v)}
+            nota={dati.arm_sottotono_nota}
+            onNotaChange={(v) => set("arm_sottotono_nota", v)}
           />
-          <Scelta
+          <SceltaConNota
             etichetta="Intensità"
             opzioni={["alta", "bassa"]}
             valore={dati.arm_intensita}
             onChange={(v) => set("arm_intensita", v)}
+            nota={dati.arm_intensita_nota}
+            onNotaChange={(v) => set("arm_intensita_nota", v)}
           />
-          <Scelta
+          <SceltaConNota
             etichetta="Contrasto"
             opzioni={["alto", "basso"]}
             valore={dati.arm_contrasto}
             onChange={(v) => set("arm_contrasto", v)}
+            nota={dati.arm_contrasto_nota}
+            onNotaChange={(v) => set("arm_contrasto_nota", v)}
           />
-          <Scelta
+          <SceltaConNota
             etichetta="Valore"
             opzioni={["chiaro", "scuro"]}
             valore={dati.arm_valore}
             onChange={(v) => set("arm_valore", v)}
+            nota={dati.arm_valore_nota}
+            onNotaChange={(v) => set("arm_valore_nota", v)}
           />
-          <Scelta
+          <SceltaConNota
             etichetta="Sovratono"
             opzioni={["miele", "rosato"]}
             valore={dati.arm_sovratono}
             onChange={(v) => set("arm_sovratono", v)}
+            nota={dati.arm_sovratono_nota}
+            onNotaChange={(v) => set("arm_sovratono_nota", v)}
           />
         </div>
-
-        <TestoArea
-          etichetta="Note"
-          valore={dati.arm_note}
-          onChange={(v) => set("arm_note", v)}
-        />
       </Sezione>
 
       {/* FACE SHAPE */}
@@ -836,6 +840,50 @@ function Scelta({
           </button>
         ))}
       </div>
+    </div>
+  );
+}
+
+function SceltaConNota({
+  etichetta,
+  opzioni,
+  valore,
+  onChange,
+  nota,
+  onNotaChange,
+}: {
+  etichetta: string;
+  opzioni: string[];
+  valore: string | undefined;
+  onChange: (v: string) => void;
+  nota: string | undefined;
+  onNotaChange: (v: string) => void;
+}) {
+  return (
+    <div className="border border-line rounded-lg p-3">
+      <EtichettaCampo testo={etichetta} />
+      <div className="flex flex-wrap gap-2 mb-2">
+        {opzioni.map((o) => (
+          <button
+            key={o}
+            type="button"
+            onClick={() => onChange(o)}
+            className={`text-sm px-3 py-1.5 rounded-full border capitalize transition-colors ${
+              valore === o
+                ? "bg-moss text-paper border-moss"
+                : "border-line text-ink hover:border-moss"
+            }`}
+          >
+            {o}
+          </button>
+        ))}
+      </div>
+      <input
+        placeholder="Note…"
+        value={nota ?? ""}
+        onChange={(e) => onNotaChange(e.target.value)}
+        className="w-full border-b border-line bg-transparent text-sm text-ink px-1 py-1.5 focus:outline-none focus:border-moss"
+      />
     </div>
   );
 }

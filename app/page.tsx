@@ -12,7 +12,7 @@ export default async function Home() {
         Bentornat{profilo?.nome ? "a" : "o"}
       </p>
       <h1 className="font-heading font-bold text-3xl text-ink mb-8">
-        {profilo?.nome || "Ciao"}
+        {profilo?.nome || profilo?.email || "Ciao"}
       </h1>
 
       <nav className="space-y-3">

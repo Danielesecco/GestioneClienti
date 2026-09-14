@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getUtenteCorrente } from "@/lib/auth";
 import NuovoOperatoreForm from "@/components/NuovoOperatoreForm";
 import RuoloSelect from "@/components/RuoloSelect";
+import EliminaOperatoreButton from "@/components/EliminaOperatoreButton";
 
 export const dynamic = "force-dynamic";
 
@@ -42,19 +43,25 @@ export default async function OperatoriPage() {
             </div>
 
             {p.id === user?.id ? (
-              <span className="text-xs px-2 py-1 rounded bg-moss text-paper">
+              <span className="text-xs px-2 py-1 rounded bg-moss text-white">
                 Admin
               </span>
             ) : (
-              <RuoloSelect profiloId={p.id} ruoloIniziale={p.ruolo} />
+              <div className="flex items-center gap-3">
+                <RuoloSelect profiloId={p.id} ruoloIniziale={p.ruolo} />
+                <EliminaOperatoreButton
+                  profiloId={p.id}
+                  nome={p.nome || p.email}
+                />
+              </div>
             )}
           </li>
         ))}
       </ul>
 
       <p className="text-xs text-slate mt-4">
-        Non puoi cambiare il tuo stesso ruolo da qui, per evitare di
-        restare fuori per errore.
+        Non puoi cambiare il tuo stesso ruolo o eliminare il tuo account da
+        qui, per evitare di restare fuori per errore.
       </p>
     </div>
   );

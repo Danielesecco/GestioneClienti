@@ -1,14 +1,28 @@
 "use client";
 
-const SPICCHI = [
-  { valore: "spring_bright", stagione: "Spring", tipo: "bright", inizio: 0, fine: 45, colore: "#F4A259" },
-  { valore: "spring_light", stagione: "Spring", tipo: "light", inizio: 45, fine: 90, colore: "#F7C59F" },
-  { valore: "autumn_deep", stagione: "Autumn", tipo: "deep", inizio: 90, fine: 135, colore: "#B5651D" },
-  { valore: "autumn_soft", stagione: "Autumn", tipo: "soft", inizio: 135, fine: 180, colore: "#C98A56" },
-  { valore: "summer_soft", stagione: "Summer", tipo: "soft", inizio: 180, fine: 225, colore: "#B8A9C9" },
-  { valore: "summer_light", stagione: "Summer", tipo: "light", inizio: 225, fine: 270, colore: "#CBD9E8" },
-  { valore: "winter_deep", stagione: "Winter", tipo: "deep", inizio: 270, fine: 315, colore: "#2E4570" },
-  { valore: "winter_bright", stagione: "Winter", tipo: "bright", inizio: 315, fine: 360, colore: "#5B7FB5" },
+const SPICCHI: {
+  valore: string;
+  stagione: string;
+  tipo: string;
+  inizio: number;
+  fine: number;
+  colore: string;
+}[] = [
+  { valore: "spring_bright", stagione: "Spring", tipo: "bright", inizio: 0, fine: 30, colore: "#F4A259" },
+  { valore: "spring_light", stagione: "Spring", tipo: "light", inizio: 30, fine: 60, colore: "#F7C59F" },
+  { valore: "spring_warm", stagione: "Spring", tipo: "warm", inizio: 60, fine: 90, colore: "#F2934F" },
+
+  { valore: "autumn_warm", stagione: "Autumn", tipo: "warm", inizio: 90, fine: 120, colore: "#C97A3A" },
+  { valore: "autumn_deep", stagione: "Autumn", tipo: "deep", inizio: 120, fine: 150, colore: "#B5651D" },
+  { valore: "autumn_soft", stagione: "Autumn", tipo: "soft", inizio: 150, fine: 180, colore: "#C98A56" },
+
+  { valore: "summer_soft", stagione: "Summer", tipo: "soft", inizio: 180, fine: 210, colore: "#B8A9C9" },
+  { valore: "summer_light", stagione: "Summer", tipo: "light", inizio: 210, fine: 240, colore: "#CBD9E8" },
+  { valore: "summer_cool", stagione: "Summer", tipo: "cool", inizio: 240, fine: 270, colore: "#9FB8D1" },
+
+  { valore: "winter_cool", stagione: "Winter", tipo: "cool", inizio: 270, fine: 300, colore: "#4A6690" },
+  { valore: "winter_deep", stagione: "Winter", tipo: "deep", inizio: 300, fine: 330, colore: "#2E4570" },
+  { valore: "winter_bright", stagione: "Winter", tipo: "bright", inizio: 330, fine: 360, colore: "#5B7FB5" },
 ];
 
 const STAGIONI_ARCO = [
@@ -79,7 +93,7 @@ export default function RuotaArmocromia({
         {SPICCHI.map((s) => {
           const attivo = s.valore === valore;
           const metaAngolo = (s.inizio + s.fine) / 2;
-          const puntoTipo = polare(metaAngolo, (R_ESTERNO + R_INTERNO) / 2);
+          const puntoTipo = polare(metaAngolo, (R_ESTERNO + R_INTERNO) / 2 + 8);
           return (
             <g key={s.valore}>
               <path
@@ -97,7 +111,7 @@ export default function RuotaArmocromia({
                 textAnchor="middle"
                 dominantBaseline="middle"
                 className="pointer-events-none select-none capitalize"
-                fontSize="12"
+                fontSize="10.5"
                 fontWeight={600}
                 fill="#FFFFFF"
                 fontFamily="Manrope, sans-serif"
@@ -157,7 +171,7 @@ export default function RuotaArmocromia({
       </svg>
 
       <p className="text-xs text-slate mt-2">
-        Tocca uno spicchio per selezionare la stagione colore.
+        Tocca uno spicchio per selezionare stagione e tonalità.
       </p>
     </div>
   );
