@@ -101,6 +101,14 @@ export default function ConsulenzaForm({
     });
   }
 
+  function setServizio(chiave: string, valore: any) {
+    setDati((d: Consulenza) => ({
+      ...d,
+      servizi: { ...(d.servizi ?? {}), [chiave]: valore },
+    }));
+    setSalvato(false);
+  }
+
   function setOcchioCm(indice: number, valore: string) {
     setDati((d: Consulenza) => {
       const arr = [...(d.fs_occhio_cm ?? ["", "", "", "", ""])];
@@ -513,7 +521,175 @@ export default function ConsulenzaForm({
         />
       </Sezione>
 
-      {errore && <p className="text-sm text-clay">{errore}</p>}
+      {/* PROGETTO PERSONALIZZATO */}
+      <Sezione
+        titolo="Progetto personalizzato FitFor"
+        sottotitolo="Sintesi conclusiva e servizi concordati"
+      >
+        <TestoArea
+          etichetta="Sintesi della consulenza"
+          valore={dati.sintesi_consulenza}
+          onChange={(v) => set("sintesi_consulenza", v)}
+        />
+        <TestoArea
+          etichetta="Obiettivo concordato"
+          valore={dati.obiettivo_concordato}
+          onChange={(v) => set("obiettivo_concordato", v)}
+        />
+
+        <div>
+          <p className="font-heading font-bold text-sm text-ink mb-3">
+            Servizi concordati
+          </p>
+
+          <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+            <div>
+              <p className="text-xs font-semibold text-moss uppercase tracking-wide mb-2">
+                Area liscio
+              </p>
+              <Checkbox
+                etichetta="Styling liscio"
+                checked={!!dati.servizi?.area_liscio_styling}
+                onChange={(v) => setServizio("area_liscio_styling", v)}
+              />
+              <Checkbox
+                etichetta="Taglio liscio"
+                checked={!!dati.servizi?.area_liscio_taglio}
+                onChange={(v) => setServizio("area_liscio_taglio", v)}
+              />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-moss uppercase tracking-wide mb-2">
+                Area riccio
+              </p>
+              <Checkbox
+                etichetta="Styling ricci"
+                checked={!!dati.servizi?.area_riccio_styling}
+                onChange={(v) => setServizio("area_riccio_styling", v)}
+              />
+              <Checkbox
+                etichetta="Taglio ricci"
+                checked={!!dati.servizi?.area_riccio_taglio}
+                onChange={(v) => setServizio("area_riccio_taglio", v)}
+              />
+            </div>
+          </div>
+
+          <p className="text-xs font-semibold text-moss uppercase tracking-wide mt-5 mb-2">
+            Trattamenti
+          </p>
+          <Checkbox
+            etichetta="Trattamento Start"
+            checked={!!dati.servizi?.trattamenti_start}
+            onChange={(v) => setServizio("trattamenti_start", v)}
+          />
+          <div className="flex items-center gap-2">
+            <Checkbox
+              etichetta="Trattamento specifico"
+              checked={!!dati.servizi?.trattamenti_specifico}
+              onChange={(v) => setServizio("trattamenti_specifico", v)}
+            />
+            <input
+              placeholder="quale…"
+              value={dati.servizi?.trattamenti_specifico_testo ?? ""}
+              onChange={(e) => setServizio("trattamenti_specifico_testo", e.target.value)}
+              className="flex-1 border-b border-line bg-transparent text-sm text-ink px-1 py-0.5 focus:outline-none focus:border-moss"
+            />
+          </div>
+
+          <p className="text-xs font-semibold text-moss uppercase tracking-wide mt-5 mb-2">
+            Colore
+          </p>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                etichetta="Colore Green"
+                checked={!!dati.servizi?.colore_green}
+                onChange={(v) => setServizio("colore_green", v)}
+              />
+              <span className="text-xs text-slate">Cod.</span>
+              <input
+                value={dati.servizi?.colore_green_cod ?? ""}
+                onChange={(e) => setServizio("colore_green_cod", e.target.value)}
+                className="w-24 border-b border-line bg-transparent text-sm text-ink px-1 py-0.5 focus:outline-none focus:border-moss"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                etichetta="Color Plus"
+                checked={!!dati.servizi?.colore_plus}
+                onChange={(v) => setServizio("colore_plus", v)}
+              />
+              <span className="text-xs text-slate">Cod.</span>
+              <input
+                value={dati.servizi?.colore_plus_cod ?? ""}
+                onChange={(e) => setServizio("colore_plus_cod", e.target.value)}
+                className="w-24 border-b border-line bg-transparent text-sm text-ink px-1 py-0.5 focus:outline-none focus:border-moss"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                etichetta="Tono su tono"
+                checked={!!dati.servizi?.colore_tono_su_tono}
+                onChange={(v) => setServizio("colore_tono_su_tono", v)}
+              />
+              <span className="text-xs text-slate">Cod.</span>
+              <input
+                value={dati.servizi?.colore_tono_su_tono_cod ?? ""}
+                onChange={(e) => setServizio("colore_tono_su_tono_cod", e.target.value)}
+                className="w-24 border-b border-line bg-transparent text-sm text-ink px-1 py-0.5 focus:outline-none focus:border-moss"
+              />
+            </div>
+          </div>
+
+          <p className="text-xs font-semibold text-moss uppercase tracking-wide mt-5 mb-2">
+            Servizi tecnici
+          </p>
+          <div className="grid grid-cols-2 gap-x-6">
+            <Checkbox
+              etichetta="Schiariture"
+              checked={!!dati.servizi?.tecnici_schiariture}
+              onChange={(v) => setServizio("tecnici_schiariture", v)}
+            />
+            <Checkbox
+              etichetta="Filler / Refill"
+              checked={!!dati.servizi?.tecnici_filler_refill}
+              onChange={(v) => setServizio("tecnici_filler_refill", v)}
+            />
+            <Checkbox
+              etichetta="Softing"
+              checked={!!dati.servizi?.tecnici_softing}
+              onChange={(v) => setServizio("tecnici_softing", v)}
+            />
+          </div>
+          <div className="flex items-center gap-2 mt-1.5">
+            <Checkbox
+              etichetta="Altro"
+              checked={!!dati.servizi?.tecnici_altro}
+              onChange={(v) => setServizio("tecnici_altro", v)}
+            />
+            <input
+              value={dati.servizi?.tecnici_altro_testo ?? ""}
+              onChange={(e) => setServizio("tecnici_altro_testo", e.target.value)}
+              className="flex-1 border-b border-line bg-transparent text-sm text-ink px-1 py-0.5 focus:outline-none focus:border-moss"
+            />
+          </div>
+        </div>
+
+        <div className="border-2 border-moss rounded-lg px-4 py-3 flex items-center justify-between bg-moss/5">
+          <span className="font-heading font-bold text-ink">Totale percorso</span>
+          <div className="flex items-center gap-1">
+            <span className="text-moss font-semibold">€</span>
+            <input
+              type="number"
+              step="0.01"
+              value={dati.totale_percorso ?? ""}
+              onChange={(e) => set("totale_percorso", e.target.value)}
+              className="w-28 border-b border-line bg-transparent text-right text-ink px-1 py-0.5 focus:outline-none focus:border-moss"
+            />
+          </div>
+        </div>
+      </Sezione>
 
       <div className="fixed bottom-0 left-0 right-0 bg-paper border-t border-line px-6 py-3">
         <div className="max-w-xl mx-auto flex items-center gap-3">
@@ -661,6 +837,28 @@ function Scelta({
         ))}
       </div>
     </div>
+  );
+}
+
+function Checkbox({
+  etichetta,
+  checked,
+  onChange,
+}: {
+  etichetta: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <label className="flex items-center gap-2 text-sm text-ink py-0.5 cursor-pointer">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="w-4 h-4 accent-[#0E93A3]"
+      />
+      {etichetta}
+    </label>
   );
 }
 
