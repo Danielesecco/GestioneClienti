@@ -1,0 +1,20 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #f7f5f1;
+  color: #1c2321;
+}
+
+::selection {
+  background-color: #b5533c;
+  color: #f7f5f1;
+}
+
+*:focus-visible {
+  outline: 2px solid #3f5b4f;
+  outline-offset: 2px;
+}
