@@ -20,12 +20,20 @@ export default function RootLayout({
             <Link href="/" className="font-display text-xl tracking-tight text-ink">
               Gestione Clienti
             </Link>
-            <Link
-              href="/nuovo"
-              className="text-sm px-4 py-2 rounded bg-moss text-paper hover:bg-ink transition-colors"
-            >
-              Nuovo cliente
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/clienti"
+                className="text-sm text-ink hover:text-moss transition-colors"
+              >
+                Clienti
+              </Link>
+              <Link
+                href="/nuovo"
+                className="text-sm px-4 py-2 rounded bg-moss text-paper hover:bg-ink transition-colors"
+              >
+                Nuovo cliente
+              </Link>
+            </div>
           </div>
         </header>
         <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>

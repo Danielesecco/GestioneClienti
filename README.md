@@ -18,12 +18,23 @@ autenticazione + storage foto)
    - la ricerca veloce sui nomi/aziende
    - il bucket di storage per le foto
    - le regole di sicurezza (solo chi ha fatto login può leggere/scrivere)
-4. Vai su **Authentication → Users** e crea un utente per te e uno per ogni
-   collega (email + password). Non serve la registrazione pubblica: gli
-   accessi li create voi da qui.
-5. Vai su **Project Settings → API** e copia:
+4. Torna su **SQL Editor** → **New query**, incolla il contenuto del file
+   `supabase/migrazione_ruoli_attivita.sql` e clicca **Run**. Questo aggiunge:
+   - i ruoli utente (admin / operatore)
+   - lo storico attività per ogni cliente
+5. Crea il tuo utente da **Authentication → Users → Add user** (email +
+   password). Non serve creare gli operatori da qui: dopo il primo accesso,
+   li creerai direttamente dall'app, sezione "Gestisci operatori"
+6. Promuoviti ad admin: **SQL Editor → New query**, esegui (sostituendo la
+   tua email):
+   ```sql
+   update profiles set ruolo = 'admin' where email = 'tuo@email.it';
+   ```
+7. Vai su **Project Settings → API** (o sul pulsante **Connect**) e copia:
    - `Project URL`
-   - `anon public key`
+   - la chiave pubblica (`anon` / `publishable`)
+   - la chiave **service_role** (o **secret**) — serve solo per creare
+     operatori dall'app, non va mai messa nel codice pubblico
 
 ## 2. Configura il progetto in locale (opzionale, solo se vuoi modificarlo)
 
@@ -42,10 +53,13 @@ Apri [http://localhost:3000](http://localhost:3000).
    Vercel CLI: `npx vercel`)
 2. Vai su [vercel.com](https://vercel.com) → **New Project** → importa la
    repository
-3. In **Environment Variables** aggiungi le stesse due variabili di
-   `.env.local`:
+3. In **Environment Variables** aggiungi:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY` (necessaria per creare operatori dall'app)
+
+   Per ognuna, scegli il tipo **Config** (non "Secret"), altrimenti il
+   build non riesce a leggerle.
 4. Clicca **Deploy**
 
 L'app sarà online su un indirizzo tipo `gestione-clienti.vercel.app`.
@@ -62,10 +76,17 @@ L'app sarà online su un indirizzo tipo `gestione-clienti.vercel.app`.
 
 ## Cosa fa l'app, oggi
 
-- Login (nessuna registrazione pubblica: gli account li create voi)
+- Login (nessuna registrazione pubblica)
+- Due ruoli: **admin** (poteri completi, crea operatori, elimina clienti)
+  e **operatore** (crea clienti, aggiunge/vede attività)
+- Menu iniziale con "Aggiungi cliente" e "Lista clienti" (+ "Gestisci
+  operatori" per l'admin)
 - Elenco clienti con ricerca per nome, azienda o email
 - Aggiunta cliente con foto, dati di contatto e note
-- Modifica ed eliminazione cliente
+- Modifica cliente (admin e operatore); eliminazione riservata all'admin
+- **Storico attività per ogni cliente**: data, descrizione, foto, e chi
+  l'ha registrata (in automatico). Entrambi i ruoli possono aggiungerle
+  e vederle
 
 ## Piano gratuito: attenzione
 
