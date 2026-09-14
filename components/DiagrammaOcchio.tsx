@@ -1,7 +1,5 @@
 "use client";
 
-import type { CSSProperties } from "react";
-
 type Punto = { colore?: string; codice?: string };
 
 const CX = 500;
@@ -25,18 +23,6 @@ const BADGE_DESTRA = [
   { lettera: "H", y: 305, atterraggio: { x: 538, y: 222 } },
 ];
 
-const STILE_INPUT: CSSProperties = {
-  width: "100%",
-  background: "transparent",
-  border: "none",
-  borderBottom: "1px solid #E4E4E4",
-  fontSize: "11px",
-  fontFamily: "Manrope, sans-serif",
-  color: "#1A1A1A",
-  padding: "2px 2px",
-  outline: "none",
-};
-
 export default function DiagrammaOcchio({
   punti,
   onChange,
@@ -44,6 +30,20 @@ export default function DiagrammaOcchio({
   punti: Record<string, Punto>;
   onChange: (lettera: string, campo: "colore" | "codice", valore: string) => void;
 }) {
+  function inputStyle(): React.CSSProperties {
+    return {
+      width: "100%",
+      background: "transparent",
+      border: "none",
+      borderBottom: "1px solid #E4E4E4",
+      fontSize: "11px",
+      fontFamily: "Manrope, sans-serif",
+      color: "#1A1A1A",
+      padding: "2px 2px",
+      outline: "none",
+    };
+  }
+
   return (
     <svg width="100%" viewBox="0 0 1000 420" className="mx-auto">
       {/* Forma a mandorla dell'occhio */}
@@ -73,7 +73,7 @@ export default function DiagrammaOcchio({
           <text x="54" y={b.y - 10} fontSize="9" fill="#8A8A8A" letterSpacing="0.5" fontFamily="Manrope, sans-serif">COLORE</text>
           <foreignObject x="54" y={b.y - 6} width="110" height="20">
             <input
-              style={STILE_INPUT}
+              style={inputStyle()}
               value={punti?.[b.lettera]?.colore ?? ""}
               onChange={(e) => onChange(b.lettera, "colore", e.target.value)}
             />
@@ -82,7 +82,7 @@ export default function DiagrammaOcchio({
           <text x="178" y={b.y - 10} fontSize="9" fill="#8A8A8A" letterSpacing="0.5" fontFamily="Manrope, sans-serif">CODICE</text>
           <foreignObject x="178" y={b.y - 6} width="110" height="20">
             <input
-              style={STILE_INPUT}
+              style={inputStyle()}
               value={punti?.[b.lettera]?.codice ?? ""}
               onChange={(e) => onChange(b.lettera, "codice", e.target.value)}
             />
@@ -102,7 +102,7 @@ export default function DiagrammaOcchio({
           <text x="706" y={b.y - 10} fontSize="9" fill="#8A8A8A" letterSpacing="0.5" fontFamily="Manrope, sans-serif">COLORE</text>
           <foreignObject x="706" y={b.y - 6} width="110" height="20">
             <input
-              style={STILE_INPUT}
+              style={inputStyle()}
               value={punti?.[b.lettera]?.colore ?? ""}
               onChange={(e) => onChange(b.lettera, "colore", e.target.value)}
             />
@@ -111,7 +111,7 @@ export default function DiagrammaOcchio({
           <text x="830" y={b.y - 10} fontSize="9" fill="#8A8A8A" letterSpacing="0.5" fontFamily="Manrope, sans-serif">CODICE</text>
           <foreignObject x="830" y={b.y - 6} width="110" height="20">
             <input
-              style={STILE_INPUT}
+              style={inputStyle()}
               value={punti?.[b.lettera]?.codice ?? ""}
               onChange={(e) => onChange(b.lettera, "codice", e.target.value)}
             />
