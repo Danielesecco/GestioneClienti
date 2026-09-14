@@ -1,23 +1,24 @@
 import type { Config } from "tailwindcss";
 
-// Palette ispirata a FitFor Italia (salone di parrucchieri, Latina):
-// eleganza, femminilità, cura del dettaglio — avorio caldo, prugna
-// profondo, bordeaux come accento, rosa antico come tono secondario.
+// Palette fedele al materiale FitFor (PDF consulenza): sfondo bianco,
+// bande teal/salvia/malva/rosa antico in testa, testo quasi-nero,
+// accento primario teal.
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        paper: "#FAF4EE", // avorio caldo, sfondo
-        ink: "#2A1E1B", // prugna profondo, quasi nero ma caldo
-        slate: "#8A776E", // testo secondario, tortora caldo
-        line: "#E2D5C8", // bordi, tortora chiaro
-        moss: "#7A2E3A", // accento primario: bordeaux/vinaccia
-        clay: "#B5495A", // stati di attenzione/eliminazione: rosa scuro
-        blush: "#D9A6A0", // tocco secondario: rosa antico
+        paper: "#FFFFFF",
+        ink: "#1A1A1A",
+        slate: "#6B6B6B",
+        line: "#E4E4E4",
+        moss: "#0E93A3", // accento primario: teal FitFor
+        clay: "#B5495A", // stati di attenzione/eliminazione
+        blush: "#AD8CA0", // tocco secondario: malva
       },
       fontFamily: {
         display: ["'Bodoni Moda'", "Georgia", "serif"],
+        heading: ["'Poppins'", "system-ui", "sans-serif"],
         sans: ["'Manrope'", "system-ui", "sans-serif"],
       },
       borderRadius: {

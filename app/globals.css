@@ -1,20 +1,20 @@
-@import url("https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400&family=Manrope:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;1,6..96,400;1,6..96,500&family=Poppins:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  background-color: #faf4ee;
-  color: #2a1e1b;
+  background-color: #ffffff;
+  color: #1a1a1a;
 }
 
 ::selection {
-  background-color: #7a2e3a;
-  color: #faf4ee;
+  background-color: #0e93a3;
+  color: #ffffff;
 }
 
 *:focus-visible {
-  outline: 2px solid #7a2e3a;
+  outline: 2px solid #0e93a3;
   outline-offset: 2px;
 }

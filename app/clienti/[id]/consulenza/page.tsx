@@ -37,8 +37,11 @@ export default async function ConsulenzaPage({
         {cliente.nome} {cliente.cognome}
       </Link>
 
-      <h1 className="font-display text-2xl text-ink mb-1">
-        Scheda di consulenza
+      <p className="font-display italic text-moss text-base mb-0.5">
+        Consulenza
+      </p>
+      <h1 className="font-heading font-extrabold text-3xl text-ink uppercase tracking-tight mb-1">
+        Master FitFor
       </h1>
       <p className="text-sm text-slate mb-6">
         Ascolto, analisi e progettazione personalizzata dell&apos;immagine.

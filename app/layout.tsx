@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Users, UserPlus, ShieldCheck } from "lucide-react";
 import { getUtenteCorrente } from "@/lib/auth";
 import LogoutButton from "@/components/LogoutButton";
+import BandeColore from "@/components/BandeColore";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,9 +27,10 @@ export default async function RootLayout({
 
   return (
     <html lang="it">
-      <body className="font-sans min-h-screen">
-        <header className="bg-paper">
-          <div className="mx-auto max-w-5xl px-6 pt-6 pb-4 flex items-end justify-between">
+      <body className="font-sans min-h-screen bg-paper">
+        <BandeColore />
+        <header className="bg-paper border-b border-line">
+          <div className="mx-auto max-w-5xl px-6 pt-5 pb-4 flex items-end justify-between">
             <Link href="/" className="flex items-center gap-2.5">
               <Image
                 src={LOGO_URL}
@@ -38,10 +40,8 @@ export default async function RootLayout({
                 className="object-contain"
                 priority
               />
-              <span>
-                <span className="block text-[11px] text-slate tracking-[0.08em] mt-0.5">
-                  gestione clienti
-                </span>
+              <span className="block text-[11px] text-slate tracking-[0.08em] uppercase">
+                gestione clienti
               </span>
             </Link>
 
@@ -65,7 +65,7 @@ export default async function RootLayout({
                 )}
                 <Link
                   href="/nuovo"
-                  className="flex items-center gap-1.5 text-sm px-4 py-2 rounded bg-moss text-paper hover:bg-ink transition-colors"
+                  className="flex items-center gap-1.5 text-sm px-4 py-2 rounded bg-moss text-white hover:bg-ink transition-colors"
                 >
                   <UserPlus size={16} strokeWidth={1.75} />
                   Nuovo cliente
@@ -76,13 +76,12 @@ export default async function RootLayout({
             ) : (
               <Link
                 href="/login"
-                className="text-sm px-4 py-2 rounded bg-moss text-paper hover:bg-ink transition-colors"
+                className="text-sm px-4 py-2 rounded bg-moss text-white hover:bg-ink transition-colors"
               >
                 Accedi
               </Link>
             )}
           </div>
-          <div className="h-px bg-gradient-to-r from-moss/0 via-moss/40 to-moss/0" />
         </header>
         <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>
       </body>

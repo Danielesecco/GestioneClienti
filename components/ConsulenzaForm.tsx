@@ -4,19 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
+import RuotaArmocromia from "@/components/RuotaArmocromia";
+import DiagrammaViso from "@/components/DiagrammaViso";
+import DiagrammaOcchio from "@/components/DiagrammaOcchio";
 
 type Consulenza = Record<string, any>;
-
-const STAGIONI = [
-  { valore: "winter_bright", etichetta: "Winter · bright" },
-  { valore: "winter_deep", etichetta: "Winter · deep" },
-  { valore: "spring_bright", etichetta: "Spring · bright" },
-  { valore: "spring_light", etichetta: "Spring · light" },
-  { valore: "summer_light", etichetta: "Summer · light" },
-  { valore: "summer_soft", etichetta: "Summer · soft" },
-  { valore: "autumn_soft", etichetta: "Autumn · soft" },
-  { valore: "autumn_deep", etichetta: "Autumn · deep" },
-];
 
 const FORME_VISO = [
   "ovale",
@@ -257,22 +249,10 @@ export default function ConsulenzaForm({
       <Sezione titolo="Armocromia" sottotitolo="Stagione colore di riferimento">
         <div>
           <EtichettaCampo testo="Stagione" />
-          <div className="flex flex-wrap gap-2">
-            {STAGIONI.map((s) => (
-              <button
-                key={s.valore}
-                type="button"
-                onClick={() => set("arm_stagione", s.valore)}
-                className={`text-sm px-3 py-1.5 rounded-full border transition-colors ${
-                  dati.arm_stagione === s.valore
-                    ? "bg-moss text-paper border-moss"
-                    : "border-line text-ink hover:border-moss"
-                }`}
-              >
-                {s.etichetta}
-              </button>
-            ))}
-          </div>
+          <RuotaArmocromia
+            valore={dati.arm_stagione}
+            onChange={(v) => set("arm_stagione", v)}
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -317,6 +297,8 @@ export default function ConsulenzaForm({
 
       {/* FACE SHAPE */}
       <Sezione titolo="Face shape" sottotitolo="Misure e forma del viso">
+        <DiagrammaViso />
+
         <div className="grid grid-cols-2 gap-4">
           <CampoNumero
             etichetta="Porzione superiore (cm)"
@@ -406,7 +388,8 @@ export default function ConsulenzaForm({
       <Sezione titolo="Analisi cromatica dell'iride" sottotitolo="Mappatura colori e contrasti">
         <div>
           <EtichettaCampo testo="Mappa dell'iride" />
-          <div className="grid grid-cols-2 gap-3">
+          <DiagrammaOcchio />
+          <div className="grid grid-cols-2 gap-3 mt-4">
             {PUNTI_IRIDE.map((punto) => (
               <div key={punto} className="flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-paper border border-line flex items-center justify-center text-xs text-ink flex-shrink-0">
@@ -562,8 +545,15 @@ function Sezione({
   return (
     <section className="border border-line rounded-lg bg-white p-6 space-y-5">
       <div>
-        <h2 className="font-display text-xl text-ink">{titolo}</h2>
-        <p className="text-sm text-slate">{sottotitolo}</p>
+        <p className="font-display italic text-moss text-base mb-0.5">
+          Consulenza
+        </p>
+        <h2 className="font-heading font-extrabold text-2xl text-ink uppercase tracking-tight">
+          {titolo}
+        </h2>
+        <p className="text-xs text-slate uppercase tracking-wide mt-1">
+          {sottotitolo}
+        </p>
       </div>
       {children}
     </section>
