@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import ClienteForm from "@/components/ClienteForm";
 import EliminaClienteButton from "@/components/EliminaClienteButton";
@@ -65,6 +66,15 @@ export default async function ClientePage({
       </div>
 
       <ClienteForm clienteIniziale={cliente} />
+
+      <div className="mt-6">
+        <Link
+          href={`/clienti/${cliente.id}/consulenza`}
+          className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded border border-line hover:border-moss hover:text-moss transition-colors"
+        >
+          Scheda di consulenza
+        </Link>
+      </div>
 
       <div className="mt-10">
         <div className="flex items-center justify-between mb-4">
