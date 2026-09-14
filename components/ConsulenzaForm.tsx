@@ -134,6 +134,37 @@ export default function ConsulenzaForm({
     return data.publicUrl;
   }
 
+  const CAMPI_NUMERICI = [
+    "fs_superiore_cm",
+    "fs_media_cm",
+    "fs_inferiore_cm",
+    "fs_lunghezza_cm",
+    "fs_balance_1_cm",
+    "fs_balance_2_cm",
+    "totale_percorso",
+  ];
+  const CAMPI_DATA = ["data_consulenza"];
+
+  function pulisciPerSalvataggio(valori: Consulenza): Consulenza {
+    const puliti = { ...valori };
+
+    for (const campo of CAMPI_NUMERICI) {
+      const v = puliti[campo];
+      puliti[campo] = v === "" || v === undefined ? null : Number(v);
+    }
+    for (const campo of CAMPI_DATA) {
+      const v = puliti[campo];
+      puliti[campo] = v === "" || v === undefined ? null : v;
+    }
+    if (Array.isArray(puliti.fs_occhio_cm)) {
+      puliti.fs_occhio_cm = puliti.fs_occhio_cm.map((v: string) =>
+        v === "" || v === undefined ? null : Number(v)
+      );
+    }
+
+    return puliti;
+  }
+
   async function handleSalva() {
     setSalvataggio(true);
     setErrore(null);
@@ -143,7 +174,7 @@ export default function ConsulenzaForm({
         data: { user },
       } = await supabase.auth.getUser();
 
-      const aggiornamenti: Consulenza = { ...dati };
+      const aggiornamenti: Consulenza = pulisciPerSalvataggio(dati);
 
       if (foto.prima) aggiornamenti.foto_prima = await caricaFoto(foto.prima, "prima");
       if (foto.dopo) aggiornamenti.foto_dopo = await caricaFoto(foto.dopo, "dopo");
