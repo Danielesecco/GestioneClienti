@@ -11,10 +11,18 @@ const SPICCHI = [
   { valore: "winter_bright", stagione: "Winter", tipo: "bright", inizio: 315, fine: 360, colore: "#5B7FB5" },
 ];
 
+const STAGIONI_ARCO = [
+  { id: "arco-spring", nome: "SPRING", inizio: 0, fine: 90, invertito: false },
+  { id: "arco-autumn", nome: "AUTUMN", inizio: 90, fine: 180, invertito: true },
+  { id: "arco-summer", nome: "SUMMER", inizio: 180, fine: 270, invertito: true },
+  { id: "arco-winter", nome: "WINTER", inizio: 270, fine: 360, invertito: false },
+];
+
 const CX = 200;
 const CY = 200;
-const R_ESTERNO = 170;
-const R_INTERNO = 60;
+const R_ESTERNO = 160;
+const R_INTERNO = 55;
+const R_ETICHETTA = 184;
 
 function polare(angoloGradi: number, raggio: number) {
   const rad = ((angoloGradi - 90) * Math.PI) / 180;
@@ -36,6 +44,15 @@ function pathSpicchio(inizio: number, fine: number) {
   ].join(" ");
 }
 
+function pathArcoEtichetta(inizio: number, fine: number, invertito: boolean) {
+  const a1 = invertito ? fine : inizio;
+  const a2 = invertito ? inizio : fine;
+  const sweep = invertito ? 0 : 1;
+  const p1 = polare(a1, R_ETICHETTA);
+  const p2 = polare(a2, R_ETICHETTA);
+  return `M ${p1.x} ${p1.y} A ${R_ETICHETTA} ${R_ETICHETTA} 0 0 ${sweep} ${p2.x} ${p2.y}`;
+}
+
 export default function RuotaArmocromia({
   valore,
   onChange,
@@ -47,12 +64,22 @@ export default function RuotaArmocromia({
 
   return (
     <div className="flex flex-col items-center">
-      <svg width="100%" viewBox="0 0 400 400" className="max-w-[360px]">
+      <svg width="100%" viewBox="0 0 400 400" className="max-w-[380px]">
+        <defs>
+          {STAGIONI_ARCO.map((s) => (
+            <path
+              key={s.id}
+              id={s.id}
+              d={pathArcoEtichetta(s.inizio, s.fine, s.invertito)}
+              fill="none"
+            />
+          ))}
+        </defs>
+
         {SPICCHI.map((s) => {
           const attivo = s.valore === valore;
           const metaAngolo = (s.inizio + s.fine) / 2;
-          const puntoStagione = polare(metaAngolo, R_ESTERNO - 24);
-          const puntoTipo = polare(metaAngolo, R_INTERNO + 26);
+          const puntoTipo = polare(metaAngolo, (R_ESTERNO + R_INTERNO) / 2);
           return (
             <g key={s.valore}>
               <path
@@ -65,25 +92,13 @@ export default function RuotaArmocromia({
                 onClick={() => onChange(s.valore)}
               />
               <text
-                x={puntoStagione.x}
-                y={puntoStagione.y}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                className="pointer-events-none select-none"
-                fontSize="10"
-                fontWeight={700}
-                fill="#FFFFFF"
-                fontFamily="Poppins, sans-serif"
-              >
-                {s.stagione.toUpperCase()}
-              </text>
-              <text
                 x={puntoTipo.x}
                 y={puntoTipo.y}
                 textAnchor="middle"
                 dominantBaseline="middle"
                 className="pointer-events-none select-none capitalize"
-                fontSize="10"
+                fontSize="12"
+                fontWeight={600}
                 fill="#FFFFFF"
                 fontFamily="Manrope, sans-serif"
               >
@@ -93,12 +108,21 @@ export default function RuotaArmocromia({
           );
         })}
 
+        {/* Nomi delle stagioni, curvi lungo il bordo esterno */}
+        {STAGIONI_ARCO.map((s) => (
+          <text key={s.id} fontSize="13" fontWeight={800} fill="#1A1A1A" fontFamily="Poppins, sans-serif" letterSpacing="1">
+            <textPath href={`#${s.id}`} startOffset="50%" textAnchor="middle">
+              {s.nome}
+            </textPath>
+          </text>
+        ))}
+
         <circle cx={CX} cy={CY} r={R_INTERNO - 2} fill="#FFFFFF" stroke="#E4E4E4" />
         <text
           x={CX}
           y={CY - 4}
           textAnchor="middle"
-          fontSize="11"
+          fontSize="12"
           fontWeight={700}
           fill="#1A1A1A"
           fontFamily="Poppins, sans-serif"
@@ -118,16 +142,16 @@ export default function RuotaArmocromia({
         </text>
 
         {/* Etichette degli assi, come nel PDF */}
-        <text x={CX} y={20} textAnchor="middle" fontSize="10" fill="#6B6B6B">
+        <text x={CX} y={14} textAnchor="middle" fontSize="9" fill="#6B6B6B">
           Intensità alta
         </text>
-        <text x={CX} y={390} textAnchor="middle" fontSize="10" fill="#6B6B6B">
+        <text x={CX} y={392} textAnchor="middle" fontSize="9" fill="#6B6B6B">
           Intensità bassa
         </text>
-        <text x={14} y={CY} textAnchor="start" fontSize="10" fill="#6B6B6B">
+        <text x={6} y={CY} textAnchor="start" fontSize="9" fill="#6B6B6B">
           Freddo
         </text>
-        <text x={386} y={CY} textAnchor="end" fontSize="10" fill="#6B6B6B">
+        <text x={394} y={CY} textAnchor="end" fontSize="9" fill="#6B6B6B">
           Caldo
         </text>
       </svg>
