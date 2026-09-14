@@ -4,6 +4,7 @@ import Image from "next/image";
 import ClienteForm from "@/components/ClienteForm";
 import EliminaClienteButton from "@/components/EliminaClienteButton";
 import AttivitaForm from "@/components/AttivitaForm";
+import EliminaAttivitaButton from "@/components/EliminaAttivitaButton";
 import { createClient } from "@/lib/supabase/server";
 import { getUtenteCorrente } from "@/lib/auth";
 
@@ -99,9 +100,14 @@ export default async function ClientePage({
                   <span className="text-sm text-ink font-medium">
                     {new Date(evento.data_evento).toLocaleDateString("it-IT")}
                   </span>
-                  <span className="text-xs text-slate">
-                    {evento.autore?.nome || evento.autore?.email || "Utente"}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate">
+                      {evento.autore?.nome || evento.autore?.email || "Utente"}
+                    </span>
+                    {profilo?.ruolo === "admin" && (
+                      <EliminaAttivitaButton id={evento.id} />
+                    )}
+                  </div>
                 </div>
                 {evento.descrizione && (
                   <p className="text-sm text-ink mb-2">{evento.descrizione}</p>
