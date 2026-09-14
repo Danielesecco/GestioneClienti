@@ -2,11 +2,12 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getUtenteCorrente } from "@/lib/auth";
 import NuovoOperatoreForm from "@/components/NuovoOperatoreForm";
+import RuoloSelect from "@/components/RuoloSelect";
 
 export const dynamic = "force-dynamic";
 
 export default async function OperatoriPage() {
-  const { profilo } = await getUtenteCorrente();
+  const { user, profilo } = await getUtenteCorrente();
 
   if (profilo?.ruolo !== "admin") {
     redirect("/");
@@ -31,21 +32,30 @@ export default async function OperatoriPage() {
             className="flex items-center justify-between px-4 py-3 bg-white"
           >
             <div>
-              <p className="text-ink font-medium">{p.nome || p.email}</p>
+              <p className="text-ink font-medium">
+                {p.nome || p.email}
+                {p.id === user?.id && (
+                  <span className="text-xs text-slate ml-2">(tu)</span>
+                )}
+              </p>
               <p className="text-sm text-slate">{p.email}</p>
             </div>
-            <span
-              className={`text-xs px-2 py-1 rounded ${
-                p.ruolo === "admin"
-                  ? "bg-moss text-paper"
-                  : "bg-line text-ink"
-              }`}
-            >
-              {p.ruolo === "admin" ? "Admin" : "Operatore"}
-            </span>
+
+            {p.id === user?.id ? (
+              <span className="text-xs px-2 py-1 rounded bg-moss text-paper">
+                Admin
+              </span>
+            ) : (
+              <RuoloSelect profiloId={p.id} ruoloIniziale={p.ruolo} />
+            )}
           </li>
         ))}
       </ul>
+
+      <p className="text-xs text-slate mt-4">
+        Non puoi cambiare il tuo stesso ruolo da qui, per evitare di
+        restare fuori per errore.
+      </p>
     </div>
   );
 }

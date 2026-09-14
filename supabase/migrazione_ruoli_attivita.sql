@@ -54,6 +54,12 @@ create policy "L'utente aggiorna solo il proprio profilo"
   using (auth.uid() = id)
   with check (auth.uid() = id);
 
+create policy "L'admin aggiorna qualsiasi profilo"
+  on profiles for update
+  to authenticated
+  using (public.is_admin())
+  with check (public.is_admin());
+
 -- ============================================================
 -- IMPORTANTE: dopo aver eseguito questo script, promuovi te
 -- stesso ad admin (sostituisci con la tua email):

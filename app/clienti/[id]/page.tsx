@@ -24,12 +24,34 @@ export default async function ClientePage({
 
   if (!cliente) notFound();
 
-  const { data: attivita } = await supabase
+  const { data: attivitaGrezze } = await supabase
     .from("attivita")
-    .select("id, data_evento, descrizione, foto_url, operatore_id, profiles(nome, email)")
+    .select("id, data_evento, descrizione, foto_url, operatore_id")
     .eq("cliente_id", params.id)
     .order("data_evento", { ascending: false })
     .order("creato_il", { ascending: false });
+
+  const idOperatori = Array.from(
+    new Set((attivitaGrezze ?? []).map((a) => a.operatore_id).filter(Boolean))
+  );
+
+  let mappaOperatori: Record<string, { nome: string | null; email: string | null }> = {};
+
+  if (idOperatori.length > 0) {
+    const { data: operatori } = await supabase
+      .from("profiles")
+      .select("id, nome, email")
+      .in("id", idOperatori as string[]);
+
+    mappaOperatori = Object.fromEntries(
+      (operatori ?? []).map((o) => [o.id, { nome: o.nome, email: o.email }])
+    );
+  }
+
+  const attivita = (attivitaGrezze ?? []).map((a) => ({
+    ...a,
+    autore: a.operatore_id ? mappaOperatori[a.operatore_id] : null,
+  }));
 
   return (
     <div className="max-w-xl">
@@ -50,17 +72,14 @@ export default async function ClientePage({
           <AttivitaForm clienteId={cliente.id} />
         </div>
 
-        {(!attivita || attivita.length === 0) && (
+        {attivita.length === 0 && (
           <p className="text-sm text-slate">
             Nessuna attività registrata per questo cliente.
           </p>
         )}
 
         <ul className="space-y-3">
-          {attivita?.map((evento) => {
-            const autore = Array.isArray(evento.profiles)
-              ? evento.profiles[0]
-              : evento.profiles;
+          {attivita.map((evento) => {
             return (
               <li
                 key={evento.id}
@@ -71,7 +90,7 @@ export default async function ClientePage({
                     {new Date(evento.data_evento).toLocaleDateString("it-IT")}
                   </span>
                   <span className="text-xs text-slate">
-                    {autore?.nome || autore?.email || "Utente"}
+                    {evento.autore?.nome || evento.autore?.email || "Utente"}
                   </span>
                 </div>
                 {evento.descrizione && (

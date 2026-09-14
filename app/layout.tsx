@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { Users, UserPlus } from "lucide-react";
+import { Users, UserPlus, ShieldCheck } from "lucide-react";
+import { getUtenteCorrente } from "@/lib/auth";
+import LogoutButton from "@/components/LogoutButton";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -12,11 +14,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+const LOGO_URL =
+  "https://cdn.shopify.com/s/files/1/0885/9310/5237/files/logo_fitfor.png?v=1731591585";
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user, profilo } = await getUtenteCorrente();
+
   return (
     <html lang="it">
       <body className="font-sans min-h-screen">
@@ -24,7 +31,7 @@ export default function RootLayout({
           <div className="mx-auto max-w-5xl px-6 pt-6 pb-4 flex items-end justify-between">
             <Link href="/" className="flex items-center gap-2.5">
               <Image
-                src="https://cdn.shopify.com/s/files/1/0885/9310/5237/files/logo_fitfor.png?v=1731591585"
+                src={LOGO_URL}
                 alt="FitFor"
                 width={38}
                 height={38}
@@ -37,22 +44,43 @@ export default function RootLayout({
                 </span>
               </span>
             </Link>
-            <nav className="flex items-center gap-4">
+
+            {user ? (
+              <nav className="flex items-center gap-4">
+                <Link
+                  href="/clienti"
+                  className="flex items-center gap-1.5 text-sm text-ink hover:text-moss transition-colors"
+                >
+                  <Users size={16} strokeWidth={1.75} />
+                  Clienti
+                </Link>
+                {profilo?.ruolo === "admin" && (
+                  <Link
+                    href="/admin/operatori"
+                    className="flex items-center gap-1.5 text-sm text-ink hover:text-moss transition-colors"
+                  >
+                    <ShieldCheck size={16} strokeWidth={1.75} />
+                    Operatori
+                  </Link>
+                )}
+                <Link
+                  href="/nuovo"
+                  className="flex items-center gap-1.5 text-sm px-4 py-2 rounded bg-moss text-paper hover:bg-ink transition-colors"
+                >
+                  <UserPlus size={16} strokeWidth={1.75} />
+                  Nuovo cliente
+                </Link>
+                <span className="w-px h-5 bg-line" />
+                <LogoutButton />
+              </nav>
+            ) : (
               <Link
-                href="/clienti"
-                className="flex items-center gap-1.5 text-sm text-ink hover:text-moss transition-colors"
+                href="/login"
+                className="text-sm px-4 py-2 rounded bg-moss text-paper hover:bg-ink transition-colors"
               >
-                <Users size={16} strokeWidth={1.75} />
-                Clienti
+                Accedi
               </Link>
-              <Link
-                href="/nuovo"
-                className="flex items-center gap-1.5 text-sm px-4 py-2 rounded bg-moss text-paper hover:bg-ink transition-colors"
-              >
-                <UserPlus size={16} strokeWidth={1.75} />
-                Nuovo cliente
-              </Link>
-            </nav>
+            )}
           </div>
           <div className="h-px bg-gradient-to-r from-moss/0 via-moss/40 to-moss/0" />
         </header>
