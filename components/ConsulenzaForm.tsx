@@ -73,11 +73,8 @@ export default function ConsulenzaForm({
       contatto: cliente.telefono || cliente.email || "",
     }
   );
-  const [foto, setFoto] = useState<{
-    prima: File | null;
-    dopo: File | null;
-    ispirazione: File | null;
-  }>({ prima: null, dopo: null, ispirazione: null });
+  // Foto scelte ma non ancora caricate: chiave = nome colonna nel database
+  const [foto, setFoto] = useState<Record<string, File | null>>({});
   const [salvataggio, setSalvataggio] = useState(false);
   const [errore, setErrore] = useState<string | null>(null);
   const [salvato, setSalvato] = useState(false);
@@ -134,37 +131,6 @@ export default function ConsulenzaForm({
     return data.publicUrl;
   }
 
-  const CAMPI_NUMERICI = [
-    "fs_superiore_cm",
-    "fs_media_cm",
-    "fs_inferiore_cm",
-    "fs_lunghezza_cm",
-    "fs_balance_1_cm",
-    "fs_balance_2_cm",
-    "totale_percorso",
-  ];
-  const CAMPI_DATA = ["data_consulenza"];
-
-  function pulisciPerSalvataggio(valori: Consulenza): Consulenza {
-    const puliti = { ...valori };
-
-    for (const campo of CAMPI_NUMERICI) {
-      const v = puliti[campo];
-      puliti[campo] = v === "" || v === undefined ? null : Number(v);
-    }
-    for (const campo of CAMPI_DATA) {
-      const v = puliti[campo];
-      puliti[campo] = v === "" || v === undefined ? null : v;
-    }
-    if (Array.isArray(puliti.fs_occhio_cm)) {
-      puliti.fs_occhio_cm = puliti.fs_occhio_cm.map((v: string) =>
-        v === "" || v === undefined ? null : Number(v)
-      );
-    }
-
-    return puliti;
-  }
-
   async function handleSalva() {
     setSalvataggio(true);
     setErrore(null);
@@ -174,12 +140,15 @@ export default function ConsulenzaForm({
         data: { user },
       } = await supabase.auth.getUser();
 
-      const aggiornamenti: Consulenza = pulisciPerSalvataggio(dati);
+      const aggiornamenti: Consulenza = { ...dati };
 
-      if (foto.prima) aggiornamenti.foto_prima = await caricaFoto(foto.prima, "prima");
-      if (foto.dopo) aggiornamenti.foto_dopo = await caricaFoto(foto.dopo, "dopo");
-      if (foto.ispirazione)
-        aggiornamenti.foto_ispirazione = await caricaFoto(foto.ispirazione, "ispirazione");
+      for (const colonna of Object.keys(foto)) {
+        const file = foto[colonna];
+        if (file) {
+          const cartella = colonna.replace(/^foto_/, "");
+          aggiornamenti[colonna] = await caricaFoto(file, cartella);
+        }
+      }
 
       const { error } = await supabase.from("consulenze").upsert(
         {
@@ -193,7 +162,7 @@ export default function ConsulenzaForm({
       if (error) throw error;
 
       setDati(aggiornamenti);
-      setFoto({ prima: null, dopo: null, ispirazione: null });
+      setFoto({});
       setSalvato(true);
       router.refresh();
     } catch (err) {
@@ -218,20 +187,32 @@ export default function ConsulenzaForm({
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <CampoFotoGrande
-            etichetta="Prima"
-            fileScelto={foto.prima}
-            urlEsistente={dati.foto_prima}
-            onChange={(f) => setFoto((s) => ({ ...s, prima: f }))}
-          />
-          <CampoFotoGrande
-            etichetta="Dopo"
-            fileScelto={foto.dopo}
-            urlEsistente={dati.foto_dopo}
-            onChange={(f) => setFoto((s) => ({ ...s, dopo: f }))}
-          />
-        </div>
+        {(["prima", "dopo"] as const).map((momento) => (
+          <div key={momento}>
+            <h3 className="font-heading font-extrabold text-lg text-moss uppercase tracking-tight mb-3">
+              {momento === "prima" ? "Prima" : "Dopo"}
+            </h3>
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { chiave: "fronte", etichetta: "Fronte" },
+                { chiave: "retro", etichetta: "Retro" },
+                { chiave: "laterale", etichetta: "Laterale" },
+              ].map(({ chiave, etichetta }) => {
+                const colonna = `foto_${momento}_${chiave}`;
+                return (
+                  <CampoFotoGrande
+                    key={colonna}
+                    etichetta={etichetta}
+                    verticale
+                    fileScelto={foto[colonna] ?? null}
+                    urlEsistente={dati[colonna]}
+                    onChange={(f) => setFoto((s) => ({ ...s, [colonna]: f }))}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        ))}
 
         <div className="grid grid-cols-2 gap-x-6 gap-y-4">
           <CampoConLinea
@@ -295,12 +276,25 @@ export default function ConsulenzaForm({
           </div>
         </div>
 
-        <CampoFotoGrande
-          etichetta="Immagine d'ispirazione"
-          fileScelto={foto.ispirazione}
-          urlEsistente={dati.foto_ispirazione}
-          onChange={(f) => setFoto((s) => ({ ...s, ispirazione: f }))}
-        />
+        <div>
+          <h3 className="font-heading font-extrabold text-lg text-moss uppercase tracking-tight mb-3">
+            Immagini d&apos;ispirazione
+          </h3>
+          <div className="grid grid-cols-3 gap-3">
+            {["foto_ispirazione", "foto_ispirazione_2", "foto_ispirazione_3"].map(
+              (colonna, i) => (
+                <CampoFotoGrande
+                  key={colonna}
+                  etichetta={`Ispirazione ${i + 1}`}
+                  verticale
+                  fileScelto={foto[colonna] ?? null}
+                  urlEsistente={dati[colonna]}
+                  onChange={(f) => setFoto((s) => ({ ...s, [colonna]: f }))}
+                />
+              )
+            )}
+          </div>
+        </div>
 
         <div>
           <h3 className="font-heading font-extrabold text-lg text-moss uppercase tracking-tight mb-4">
@@ -860,17 +854,23 @@ function CampoFotoGrande({
   fileScelto,
   urlEsistente,
   onChange,
+  verticale = false,
 }: {
   etichetta: string;
   fileScelto: File | null;
   urlEsistente: string | undefined;
   onChange: (f: File | null) => void;
+  verticale?: boolean;
 }) {
   const anteprima = fileScelto ? URL.createObjectURL(fileScelto) : urlEsistente;
 
   return (
-    <label className="relative block aspect-[4/3] rounded-lg border border-line bg-paper cursor-pointer overflow-hidden group">
-      <span className="absolute top-3 left-3 font-heading font-bold text-xs text-moss uppercase tracking-wide z-10">
+    <label
+      className={`relative block ${
+        verticale ? "aspect-[3/4]" : "aspect-[4/3]"
+      } rounded-lg border border-line bg-paper cursor-pointer overflow-hidden group`}
+    >
+      <span className="absolute top-2 left-2 font-heading font-bold text-[10px] sm:text-xs text-moss uppercase tracking-wide z-10 bg-white/80 rounded px-1.5 py-0.5">
         {etichetta}
       </span>
       {anteprima ? (
